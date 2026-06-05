@@ -1,4 +1,3 @@
 <Solution>
   <Project Path="DevDigest.Data/DevDigest.Data.csproj" />
-  <Project Path="DevDigest.Web/DevDigest.Web.csproj" />
 </Solution>

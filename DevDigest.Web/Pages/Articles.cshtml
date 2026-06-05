@@ -1,0 +1,15 @@
+@page
+@model DevDigest.Web.Pages.ArticlesModel
+
+<h1>Developer Digest</h1>
+
+@foreach (var article in Model.Articles)
+{
+    <div>
+        <h3>@article.Title</h3>
+        <p>@article.Source | @article.Category</p>
+        <p>@article.Summary</p>
+        <a href="@article.Url" target="_blank">Read More</a>
+        <hr />
+    </div>
+}
