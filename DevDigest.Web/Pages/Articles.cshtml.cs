@@ -1,5 +1,6 @@
 using DevDigest.Data.Data;
 using DevDigest.Data.Models;
+using DevDigest.Web.Services;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,33 +9,24 @@ namespace DevDigest.Web.Pages;
 public class ArticlesModel : PageModel
 {
     private readonly AppDbContext _db;
+    private readonly RssFeedService _rss;
 
-    public ArticlesModel(AppDbContext db)
+    public ArticlesModel(
+        AppDbContext db,
+        RssFeedService rss)
     {
         _db = db;
+        _rss = rss;
     }
 
     public List<Article> Articles { get; set; } = [];
 
     public async Task OnGetAsync()
     {
-        if (!await _db.Articles.AnyAsync())
-        {
-            _db.Articles.Add(new Article
-            {
-                Title = "Welcome to DevDigest",
-                Url = "https://example.com",
-                Source = ".NET Blog",
-                Category = ".NET",
-                Summary = "First article",
-                PublishedAt = DateTime.UtcNow
-            });
-
-            await _db.SaveChangesAsync();
-        }
+        await _rss.ImportFeedsAsync();
 
         Articles = await _db.Articles
-            .OrderByDescending(a => a.PublishedAt)
+            .OrderByDescending(x => x.PublishedAt)
             .ToListAsync();
     }
 }
