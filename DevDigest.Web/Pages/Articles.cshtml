@@ -3,13 +3,27 @@
 
 <h1>Developer Digest</h1>
 
+<p>Latest developer articles from .NET and GitHub.</p>
+
+<p><strong>Total Articles:</strong> @Model.Articles.Count</p>
+
 @foreach (var article in Model.Articles)
 {
-    <div>
-        <h3>@article.Title</h3>
-        <p>@article.Source | @article.Category</p>
-        <p>@article.Summary</p>
-        <a href="@article.Url" target="_blank">Read More</a>
+    <div style="margin-bottom: 24px;">
+        <h3>
+            <a href="@article.Url" target="_blank">
+                @article.Title
+            </a>
+        </h3>
+
+        <p>
+            <strong>@article.Source</strong>
+            |
+            @article.PublishedAt.ToShortDateString()
+        </p>
+
+        <p>@Html.Raw(article.Summary)</p>
+
         <hr />
     </div>
 }
