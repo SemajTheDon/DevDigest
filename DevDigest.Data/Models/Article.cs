@@ -17,4 +17,9 @@ public class Article
     public string? Category { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public string? AiSummary { get; set; }
+
+    public string? KeyTakeaways { get; set; }
+
+    public bool IsAiProcessed { get; set; } = false;
 }

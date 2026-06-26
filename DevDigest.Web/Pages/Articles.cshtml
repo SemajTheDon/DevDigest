@@ -9,7 +9,8 @@
 
 @foreach (var article in Model.Articles)
 {
-    <div style="margin-bottom: 24px;">
+    <div style="margin-bottom:24px; padding:20px; border:1px solid #ddd; border-radius:8px;">
+
         <h3>
             <a href="@article.Url" target="_blank">
                 @article.Title
@@ -17,13 +18,27 @@
         </h3>
 
         <p>
-            <strong>@article.Source</strong>
-            |
+            <strong>@article.Source</strong> |
             @article.PublishedAt.ToShortDateString()
         </p>
 
-        <p>@Html.Raw(article.Summary)</p>
+        <p>
+            <strong>Category:</strong> @article.Category
+        </p>
 
-        <hr />
+        <p>
+            <strong>AI Summary</strong>
+        </p>
+
+        <p>@article.AiSummary</p>
+
+        <p>
+            <strong>Key Takeaways</strong>
+        </p>
+
+        <p style="white-space: pre-line;">
+            @article.KeyTakeaways
+        </p>
+
     </div>
 }
