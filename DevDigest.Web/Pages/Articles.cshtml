@@ -13,15 +13,67 @@
         </p>
     </header>
 
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h2>@Model.TotalArticles</h2>
+            <p>Total Articles</p>
+        </div>
+
+        <div class="stat-card">
+            <h2>@Model.DotNetCount</h2>
+            <p>.NET</p>
+        </div>
+
+        <div class="stat-card">
+            <h2>@Model.GitHubCount</h2>
+            <p>GitHub</p>
+        </div>
+
+        <div class="stat-card">
+            <h2>@Model.CloudCount</h2>
+            <p>Cloud</p>
+        </div>
+
+        <div class="stat-card">
+            <h2>@Model.AiCount</h2>
+            <p>AI</p>
+        </div>
+    </div>
     <section class="dashboard-bar">
-        <input class="search-box" type="text" placeholder="Search articles..." />
+        <form method="get" class="filter-form">
+            <input class="search-box" asp-for="SearchTerm" placeholder="Search articles..." />
+
+            <select class="sort-select" asp-for="SortBy" onchange="this.form.submit()">
+                <option>Newest</option>
+                <option>Oldest</option>
+                <option>Source</option>
+            </select>
+        </form>
 
         <div class="filter-row">
-            <span class="filter-pill active">All</span>
-            <span class="filter-pill">.NET</span>
-            <span class="filter-pill">GitHub</span>
-            <span class="filter-pill">Azure</span>
-            <span class="filter-pill">AI</span>
+            <a class="filter-pill @(string.IsNullOrWhiteSpace(Model.Category) ? "active" : "")" asp-page="/Articles">
+                All
+            </a>
+
+            <a class="filter-pill @(Model.Category == ".NET" ? "active" : "")" asp-page="/Articles"
+               asp-route-category=".NET" asp-route-searchTerm="@Model.SearchTerm" asp-route-sortBy="@Model.SortBy">
+                .NET
+            </a>
+
+            <a class="filter-pill @(Model.Category == "GitHub" ? "active" : "")" asp-page="/Articles"
+               asp-route-category="GitHub" asp-route-searchTerm="@Model.SearchTerm" asp-route-sortBy="@Model.SortBy">
+                GitHub
+            </a>
+
+            <a class="filter-pill @(Model.Category == "Cloud" ? "active" : "")" asp-page="/Articles"
+               asp-route-category="Cloud" asp-route-searchTerm="@Model.SearchTerm" asp-route-sortBy="@Model.SortBy">
+                Cloud
+            </a>
+
+            <a class="filter-pill @(Model.Category == "AI" ? "active" : "")" asp-page="/Articles"
+               asp-route-category="AI" asp-route-searchTerm="@Model.SearchTerm" asp-route-sortBy="@Model.SortBy">
+                AI
+            </a>
         </div>
     </section>
 
