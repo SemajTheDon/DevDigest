@@ -1,44 +1,75 @@
 @page
 @model DevDigest.Web.Pages.ArticlesModel
 
-<h1>Developer Digest</h1>
+<div class="digest-container">
 
-<p>Latest developer articles from .NET and GitHub.</p>
-
-<p><strong>Total Articles:</strong> @Model.Articles.Count</p>
-
-@foreach (var article in Model.Articles)
-{
-    <div style="margin-bottom:24px; padding:20px; border:1px solid #ddd; border-radius:8px;">
-
-        <h3>
-            <a href="@article.Url" target="_blank">
-                @article.Title
-            </a>
-        </h3>
-
-        <p>
-            <strong>@article.Source</strong> |
-            @article.PublishedAt.ToShortDateString()
+    <header class="digest-header">
+        <h1 class="digest-title">DevDigest</h1>
+        <button id="themeToggle">
+            🌙 Dark Mode
+        </button>
+        <p class="digest-subtitle">
+            AI-assisted developer learning dashboard for .NET, GitHub, Azure, and cloud engineering.
         </p>
+    </header>
 
-        <p>
-            <strong>Category:</strong> @article.Category
-        </p>
+    <section class="dashboard-bar">
+        <input class="search-box" type="text" placeholder="Search articles..." />
 
-        <p>
-            <strong>AI Summary</strong>
-        </p>
+        <div class="filter-row">
+            <span class="filter-pill active">All</span>
+            <span class="filter-pill">.NET</span>
+            <span class="filter-pill">GitHub</span>
+            <span class="filter-pill">Azure</span>
+            <span class="filter-pill">AI</span>
+        </div>
+    </section>
 
-        <p>@article.AiSummary</p>
+    <p><strong>Total Articles:</strong> @Model.Articles.Count</p>
 
-        <p>
-            <strong>Key Takeaways</strong>
-        </p>
+    @if (!Model.Articles.Any())
+    {
+        <div class="empty-state">
+            <h2>No articles found</h2>
+            <p>Import RSS feeds to begin building your developer digest.</p>
+        </div>
+    }
+    else
+    {
+        <section class="article-grid">
+            @foreach (var article in Model.Articles)
+            {
+                <article class="article-card">
 
-        <p style="white-space: pre-line;">
-            @article.KeyTakeaways
-        </p>
+                    <div class="article-meta">
+                        <span class="badge">@article.Source</span>
+                        <span>@article.PublishedAt.ToShortDateString()</span>
+                        <span>@article.Category</span>
+                    </div>
 
-    </div>
+                    <h2 class="article-title">
+                        <a href="@article.Url" target="_blank">
+                            @article.Title
+                        </a>
+                    </h2>
+
+                    <p class="section-label">AI Summary</p>
+                    <p class="summary-text">@article.AiSummary</p>
+
+                    <p class="section-label">Key Takeaways</p>
+                    <p class="takeaways">@article.KeyTakeaways</p>
+
+                    <a class="read-link" href="@article.Url" target="_blank">
+                        Read article →
+                    </a>
+
+                </article>
+            }
+        </section>
+    }
+
+</div>
+
+@section Scripts {
+
 }
