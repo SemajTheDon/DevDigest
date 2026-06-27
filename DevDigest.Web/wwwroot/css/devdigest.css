@@ -280,3 +280,53 @@ body.dark-mode .badge {
     font-weight: 700;
     font-size: .8rem;
 }
+
+.filter-form {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.sort-select {
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+}
+
+.stat-card h2 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.stat-card p {
+    margin: 4px 0 0;
+    color: var(--muted);
+}
+
+body.dark-mode .sort-select {
+    background: #111827;
+    color: var(--text);
+    border-color: var(--border);
+}
+
+body.dark-mode .stat-card {
+    background: var(--card);
+    border-color: var(--border);
+}
