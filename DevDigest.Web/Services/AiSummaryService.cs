@@ -6,7 +6,7 @@ public class AiSummaryService
 {
     public Task ProcessArticleAsync(Article article)
     {
-        article.AiSummary =  $"This article discusses {article.Title}. It highlights recent updates, explains why they matter to developers, and may be worth reviewing if you work with .NET, GitHub, Azure, or modern software development.";
+        article.AiSummary = $"This article discusses {article.Title}. It highlights recent updates, explains why they matter to developers, and may be worth reviewing if you work with .NET, GitHub, Azure, or modern software development.";
         article.KeyTakeaways =
         "• Understand the main announcement\n" +
         "• Review any new APIs or features\n" +
@@ -18,9 +18,9 @@ public class AiSummaryService
         return Task.CompletedTask;
     }
 
-    private string DetermineCategory(string? text)
+    private static string DetermineCategory(string? text)
     {
-        text = text?.ToLower() ?? "";
+        text = text?.ToLower() ?? string.Empty;
 
         if (text.Contains("dotnet") || text.Contains(".net") || text.Contains("c#"))
             return ".NET";
