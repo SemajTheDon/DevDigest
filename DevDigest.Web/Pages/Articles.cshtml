@@ -96,7 +96,7 @@
                     <div class="article-meta">
                         <span class="badge">@article.Source</span>
                         <span>@article.PublishedAt.ToShortDateString()</span>
-                        <span>@article.Category</span>
+                        <span class="category-badge">@article.Category</span>
                     </div>
 
                     <h2 class="article-title">
@@ -105,8 +105,24 @@
                         </a>
                     </h2>
 
-                    <p class="section-label">AI Summary</p>
-                    <p class="summary-text">@article.AiSummary</p>
+                    @if (!string.IsNullOrWhiteSpace(article.AiSummary))
+                    {
+                        <div class="mt-2">
+                            <strong>🤖 AI Summary</strong>
+
+                            <p>@article.AiSummary</p>
+                        </div>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(article.KeyTakeaways))
+                    {
+                        <div class="mt-2">
+                            <strong>📌 Key Takeaways</strong>
+
+                            <pre style="white-space: pre-wrap;">
+                                @article.KeyTakeaways
+                            </pre>
+                        </div>
+                    }
 
                     <p class="section-label">Key Takeaways</p>
                     <p class="takeaways">@article.KeyTakeaways</p>

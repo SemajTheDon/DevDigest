@@ -6,8 +6,12 @@ public class AiSummaryService
 {
     public Task ProcessArticleAsync(Article article)
     {
-        article.AiSummary = $"Quick summary: {article.Title}";
-        article.KeyTakeaways = "1. Important developer update\n2. Worth reviewing this week\n3. May apply to .NET/cloud learning";
+        article.AiSummary =  $"This article discusses {article.Title}. It highlights recent updates, explains why they matter to developers, and may be worth reviewing if you work with .NET, GitHub, Azure, or modern software development.";
+        article.KeyTakeaways =
+        "• Understand the main announcement\n" +
+        "• Review any new APIs or features\n" +
+        "• Consider whether this impacts your current projects";
+
         article.Category = DetermineCategory(article.Title + " " + article.Summary);
         article.IsAiProcessed = true;
 

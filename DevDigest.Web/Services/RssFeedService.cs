@@ -8,10 +8,12 @@ namespace DevDigest.Web.Services;
 public class RssFeedService
 {
     private readonly AppDbContext _db;
+    private readonly AiSummaryService _aiSummaryService;
 
-    public RssFeedService(AppDbContext db)
+    public RssFeedService(AppDbContext db, AiSummaryService aiSummaryService)
     {
         _db = db;
+        _aiSummaryService = aiSummaryService;
     }
 
     public async Task ImportFeedsAsync()
@@ -40,9 +42,11 @@ public class RssFeedService
                     Url = item.Link ?? "",
                     Source = feed.Key,
                     Summary = item.Description,
-                    Category = "Technology",
+                    Category = string.Empty,
                     PublishedAt = item.PublishingDate ?? DateTime.UtcNow
                 };
+
+                await _aiSummaryService.ProcessArticleAsync(article);
 
                 _db.Articles.Add(article);
             }
