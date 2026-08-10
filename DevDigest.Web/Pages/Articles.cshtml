@@ -115,12 +115,19 @@
                     }
                     @if (!string.IsNullOrWhiteSpace(article.KeyTakeaways))
                     {
-                        <div class="mt-2">
-                            <strong>📌 Key Takeaways</strong>
+                        var takeaways = article.KeyTakeaways
+                            .Split('\n', StringSplitOptions.RemoveEmptyEntries)
+                            .Select(x => x.Trim().TrimStart('-', '•').Trim());
 
-                            <pre style="white-space: pre-wrap;">
-                                @article.KeyTakeaways
-                            </pre>
+                        <div class="key-takeaways">
+                            <strong>Key Takeaways</strong>
+
+                            <ul>
+                                @foreach (var takeaway in takeaways)
+                                {
+                                    <li>@takeaway</li>
+                                }
+                            </ul>
                         </div>
                     }
 

@@ -59,7 +59,20 @@ public class AiSummaryService
 
             Focus on what the developer could learn from the article.
 
-            Return the response in a clear structured format.
+        You MUST return the response using exactly this format:
+
+        SUMMARY:
+        [2-4 sentence summary]
+
+        TAKEAWAYS:
+        - [takeaway 1]
+        - [takeaway 2]
+        - [takeaway 3]
+
+        CATEGORY:
+        [one category from the provided list]
+
+        Do not add headings, markdown formatting, or any other text.
         """;
 
         try
@@ -80,16 +93,16 @@ public class AiSummaryService
                 response.Value.GetOutputText();
 
             Console.WriteLine("AI RESPONSE:");
-            Console.WriteLine(outputText);
 
             var summaryStart =
-                outputText.IndexOf("SUMMARY:");
+                outputText.IndexOf("SUMMARY:", StringComparison.OrdinalIgnoreCase);
 
             var takeawaysStart =
-                outputText.IndexOf("TAKEAWAYS:");
+                outputText.IndexOf("TAKEAWAYS:", StringComparison.OrdinalIgnoreCase);
 
             var categoryStart =
-                outputText.IndexOf("CATEGORY:");
+                outputText.IndexOf("CATEGORY:", StringComparison.OrdinalIgnoreCase);
+
 
             if (
                 summaryStart >= 0 &&
@@ -133,16 +146,6 @@ public class AiSummaryService
             article.IsAiProcessed = false;
         }
 
-        // article.AiSummary = $"This article discusses {article.Title}. It highlights recent updates, explains why they matter to developers, and may be worth reviewing if you work with .NET, GitHub, Azure, or modern software development.";
-        // article.KeyTakeaways =
-        // "• Understand the main announcement\n" +
-        // "• Review any new APIs or features\n" +
-        // "• Consider whether this impacts your current projects";
-
-        // article.Category = DetermineCategory(article.Title + " " + article.Summary);
-        // article.IsAiProcessed = true;
-
-        // return Task.CompletedTask;
     }
 
     private static string DetermineCategory(string? text)

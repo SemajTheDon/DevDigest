@@ -31,6 +31,7 @@ public class ArticlesModel : PageModel
 
         var unprocessedArticles = await _db.Articles
             .Where(a => !a.IsAiProcessed)
+            .OrderByDescending(a => a.PublishedAt)
             .Take(10)
             .ToListAsync();
 
