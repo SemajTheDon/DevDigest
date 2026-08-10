@@ -1,21 +1,148 @@
+#pragma warning disable OPENAI001
+
 using DevDigest.Data.Models;
+using OpenAI.Responses;
 
 namespace DevDigest.Web.Services;
 
 public class AiSummaryService
 {
-    public Task ProcessArticleAsync(Article article)
+    private readonly ResponsesClient _client;
+    private readonly string _model;
+
+    public AiSummaryService(IConfiguration configuration)
     {
-        article.AiSummary = $"This article discusses {article.Title}. It highlights recent updates, explains why they matter to developers, and may be worth reviewing if you work with .NET, GitHub, Azure, or modern software development.";
-        article.KeyTakeaways =
-        "• Understand the main announcement\n" +
-        "• Review any new APIs or features\n" +
-        "• Consider whether this impacts your current projects";
+        var apiKey = configuration["OpenAI:ApiKey"];
 
-        article.Category = DetermineCategory(article.Title + " " + article.Summary);
-        article.IsAiProcessed = true;
+        _model = configuration["OpenAI:Model"]
+            ?? "gpt-5.6-luna";
 
-        return Task.CompletedTask;
+        if (string.IsNullOrWhiteSpace(apiKey))
+        {
+            throw new InvalidOperationException(
+                "OpenAI API key has not been configured.");
+        }
+
+        _client = new ResponsesClient(apiKey);
+    }
+
+    public async Task ProcessArticleAsync(Article article)
+    {
+        var prompt = $"""
+        You are creating a daily digest for a software developer.
+
+        Analyze the following developer article.
+
+        Title:
+        {article.Title}
+
+        Source:
+        {article.Source}
+
+        Article description:
+        {article.Summary}
+
+        Create:
+
+        1. A concise summary between 2 and 4 sentences.
+        2. Three useful key takeaways for a software developer.
+        3. A category from one of these:
+            .NET
+            GitHub
+            Cloud
+            AI
+            Database
+            Web Development
+            DevOps
+            Security
+            Technology
+
+            Focus on what the developer could learn from the article.
+
+            Return the response in a clear structured format.
+        """;
+
+        try
+        {
+            var options = new CreateResponseOptions
+            {
+                Model = _model,
+            };
+
+            options.InputItems.Add(
+                ResponseItem.CreateUserMessageItem(prompt)
+            );
+
+            var response =
+                await _client.CreateResponseAsync(options);
+
+            string outputText =
+                response.Value.GetOutputText();
+
+            Console.WriteLine("AI RESPONSE:");
+            Console.WriteLine(outputText);
+
+            var summaryStart =
+                outputText.IndexOf("SUMMARY:");
+
+            var takeawaysStart =
+                outputText.IndexOf("TAKEAWAYS:");
+
+            var categoryStart =
+                outputText.IndexOf("CATEGORY:");
+
+            if (
+                summaryStart >= 0 &&
+                takeawaysStart >= 0 &&
+                categoryStart >= 0)
+            {
+                article.AiSummary = outputText
+                    .Substring(
+                        summaryStart + "SUMMARY:".Length,
+                        takeawaysStart -
+                        (summaryStart + "SUMMARY:".Length))
+                    .Trim();
+
+                article.KeyTakeaways = outputText
+                    .Substring(
+                        takeawaysStart + "TAKEAWAYS:".Length,
+                        categoryStart -
+                        (takeawaysStart + "TAKEAWAYS:".Length))
+                    .Trim();
+
+                article.Category = outputText
+                    .Substring(
+                        categoryStart + "CATEGORY:".Length)
+                    .Trim();
+
+                article.IsAiProcessed = true;
+            }
+            else
+            {
+                Console.WriteLine(
+                    "AI response format was unexpected.");
+
+                article.IsAiProcessed = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(
+                $"Error processing article with AI: {ex.Message}");
+
+            article.IsAiProcessed = false;
+        }
+
+        // article.AiSummary = $"This article discusses {article.Title}. It highlights recent updates, explains why they matter to developers, and may be worth reviewing if you work with .NET, GitHub, Azure, or modern software development.";
+        // article.KeyTakeaways =
+        // "• Understand the main announcement\n" +
+        // "• Review any new APIs or features\n" +
+        // "• Consider whether this impacts your current projects";
+
+        // article.Category = DetermineCategory(article.Title + " " + article.Summary);
+        // article.IsAiProcessed = true;
+
+        // return Task.CompletedTask;
     }
 
     private static string DetermineCategory(string? text)

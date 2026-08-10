@@ -28,7 +28,7 @@ public class RssFeedService
         {
             var rss = await FeedReader.ReadAsync(feed.Value);
 
-            foreach (var item in rss.Items.Take(10))
+            foreach (var item in rss.Items.Take(1))
             {
                 bool exists = await _db.Articles
                     .AnyAsync(x => x.Url == item.Link);
