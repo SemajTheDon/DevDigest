@@ -11,6 +11,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<RssFeedService>();
 builder.Services.AddScoped<AiSummaryService>();
+builder.Services.AddHttpClient<ArticleContentService>();
 
 var app = builder.Build();
 

@@ -26,8 +26,13 @@ public class AiSummaryService
         _client = new ResponsesClient(apiKey);
     }
 
-    public async Task ProcessArticleAsync(Article article)
+    public async Task ProcessArticleAsync(Article article, string? articleContent = null)
     {
+        var contentToAnalyze =
+        !string.IsNullOrWhiteSpace(articleContent)
+        ? articleContent
+        : article.Summary;
+
         var prompt = $"""
         You are creating a daily digest for a software developer.
 
@@ -40,7 +45,7 @@ public class AiSummaryService
         {article.Source}
 
         Article description:
-        {article.Summary}
+        {contentToAnalyze}
 
         Create:
 
