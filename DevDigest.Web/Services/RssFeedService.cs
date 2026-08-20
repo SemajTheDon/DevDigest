@@ -9,11 +9,13 @@ public class RssFeedService
 {
     private readonly AppDbContext _db;
     private readonly AiSummaryService _aiSummaryService;
+    private readonly ArticleContentService _articleContentService;
 
-    public RssFeedService(AppDbContext db, AiSummaryService aiSummaryService)
+    public RssFeedService(AppDbContext db, AiSummaryService aiSummaryService, ArticleContentService articleContentService)
     {
         _db = db;
         _aiSummaryService = aiSummaryService;
+        _articleContentService = articleContentService;
     }
 
     public async Task ImportFeedsAsync()
@@ -46,9 +48,13 @@ public class RssFeedService
                     PublishedAt = item.PublishingDate ?? DateTime.UtcNow
                 };
 
-                await _aiSummaryService.ProcessArticleAsync(article);
+
 
                 _db.Articles.Add(article);
+
+                var fullContent = await _articleContentService.GetArticleContentAsync(article.Url);
+
+                await _aiSummaryService.ProcessArticleAsync(article, fullContent);
             }
         }
 
