@@ -17,6 +17,11 @@
             Send Daily Digest
         </button>
     </form>
+    <form method="post" asp-page-handler="RunAutomation">
+        <button type="submit" class="btn btn-success">
+            Run Full Daily Digest
+        </button>
+    </form>
     <div class="stats-grid">
         <div class="stat-card">
             <h2>@Model.TotalArticles</h2>
