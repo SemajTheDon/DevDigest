@@ -12,7 +12,11 @@
             AI-assisted developer learning dashboard for .NET, GitHub, Azure, and cloud engineering.
         </p>
     </header>
-
+    <form method="post" asp-page-handler="SendDigest">
+        <button type="submit" class="btn btn-primary">
+            Send Daily Digest
+        </button>
+    </form>
     <div class="stats-grid">
         <div class="stat-card">
             <h2>@Model.TotalArticles</h2>

@@ -12,6 +12,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<RssFeedService>();
 builder.Services.AddScoped<AiSummaryService>();
 builder.Services.AddHttpClient<ArticleContentService>();
+builder.Services.AddHttpClient<DailyDigestService>();
 
 var app = builder.Build();
 

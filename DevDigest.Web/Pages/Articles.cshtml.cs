@@ -13,14 +13,18 @@ public class ArticlesModel : PageModel
     private readonly RssFeedService _rss;
     private readonly AiSummaryService _aiSummaryService;
 
+    private readonly DailyDigestService _dailyDigestService;
+
     public ArticlesModel(
         AppDbContext db,
         RssFeedService rss,
-        AiSummaryService aiSummaryService)
+        AiSummaryService aiSummaryService,
+        DailyDigestService dailyDigestService)
     {
         _db = db;
         _rss = rss;
         _aiSummaryService = aiSummaryService;
+        _dailyDigestService = dailyDigestService;
     }
 
     public List<Article> Articles { get; set; } = [];
@@ -75,6 +79,13 @@ public class ArticlesModel : PageModel
         };
 
         Articles = await query.ToListAsync();
+    }
+
+    public async Task<IActionResult> OnPostSendDigestAsync()
+    {
+        await _dailyDigestService.SendDailyDigestEmailAsync();
+
+        return RedirectToPage();
     }
 
     [BindProperty(SupportsGet = true)]
