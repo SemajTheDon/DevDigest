@@ -12,19 +12,21 @@ public class ArticlesModel : PageModel
     private readonly AppDbContext _db;
     private readonly RssFeedService _rss;
     private readonly AiSummaryService _aiSummaryService;
-
     private readonly DailyDigestService _dailyDigestService;
+    private readonly DigestAutomationService _digestAutomationService;
 
     public ArticlesModel(
         AppDbContext db,
         RssFeedService rss,
         AiSummaryService aiSummaryService,
-        DailyDigestService dailyDigestService)
+        DailyDigestService dailyDigestService,
+        DigestAutomationService digestAutomationService)
     {
         _db = db;
         _rss = rss;
         _aiSummaryService = aiSummaryService;
         _dailyDigestService = dailyDigestService;
+        _digestAutomationService = digestAutomationService;
     }
 
     public List<Article> Articles { get; set; } = [];
@@ -84,6 +86,13 @@ public class ArticlesModel : PageModel
     public async Task<IActionResult> OnPostSendDigestAsync()
     {
         await _dailyDigestService.SendDailyDigestEmailAsync();
+
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostRunAutomationAsync()
+    {
+        await _digestAutomationService.RunDailyDigestAsync();
 
         return RedirectToPage();
     }
