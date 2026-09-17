@@ -1,9 +1,17 @@
+# .NET build output
 bin/
 obj/
+
+# IDE / editor
 .vs/
 .vscode/
 *.user
 *.suo
+
+# macOS
+.DS_Store
+
+# SQLite
 *.db
 *.db-shm
-*.db-walt
+*.db-wal
