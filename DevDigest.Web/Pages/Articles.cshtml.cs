@@ -33,21 +33,21 @@ public class ArticlesModel : PageModel
 
     public async Task OnGetAsync()
     {
-        await _rss.ImportFeedsAsync();
+        /* await _rss.ImportFeedsAsync();
 
-        var unprocessedArticles = await _db.Articles
-            .Where(a => !a.IsAiProcessed)
-            .OrderByDescending(a => a.PublishedAt)
-            .Take(10)
-            .ToListAsync();
+           var unprocessedArticles = await _db.Articles
+               .Where(a => !a.IsAiProcessed)
+               .OrderByDescending(a => a.PublishedAt)
+               .Take(10)
+               .ToListAsync();
 
-        foreach (var article in unprocessedArticles)
-        {
-            await _aiSummaryService.ProcessArticleAsync(article);
-        }
+           foreach (var article in unprocessedArticles)
+           {
+               await _aiSummaryService.ProcessArticleAsync(article);
+           }
 
-        await _db.SaveChangesAsync();
-
+           await _db.SaveChangesAsync();
+       */
         TotalArticles = await _db.Articles.CountAsync();
         DotNetCount = await _db.Articles.CountAsync(a => a.Category == ".NET");
         GitHubCount = await _db.Articles.CountAsync(a => a.Category == "GitHub");
