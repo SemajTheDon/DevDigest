@@ -1,6 +1,5 @@
 using DevDigest.Data.Data;
 using DevDigest.Data.Models;
-using DevDigest.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -10,44 +9,16 @@ namespace DevDigest.Web.Pages;
 public class ArticlesModel : PageModel
 {
     private readonly AppDbContext _db;
-    private readonly RssFeedService _rss;
-    private readonly AiSummaryService _aiSummaryService;
-    private readonly DailyDigestService _dailyDigestService;
-    private readonly DigestAutomationService _digestAutomationService;
 
-    public ArticlesModel(
-        AppDbContext db,
-        RssFeedService rss,
-        AiSummaryService aiSummaryService,
-        DailyDigestService dailyDigestService,
-        DigestAutomationService digestAutomationService)
+    public ArticlesModel(AppDbContext db)
     {
         _db = db;
-        _rss = rss;
-        _aiSummaryService = aiSummaryService;
-        _dailyDigestService = dailyDigestService;
-        _digestAutomationService = digestAutomationService;
     }
 
     public List<Article> Articles { get; set; } = [];
 
     public async Task OnGetAsync()
     {
-        /* await _rss.ImportFeedsAsync();
-
-           var unprocessedArticles = await _db.Articles
-               .Where(a => !a.IsAiProcessed)
-               .OrderByDescending(a => a.PublishedAt)
-               .Take(10)
-               .ToListAsync();
-
-           foreach (var article in unprocessedArticles)
-           {
-               await _aiSummaryService.ProcessArticleAsync(article);
-           }
-
-           await _db.SaveChangesAsync();
-       */
         TotalArticles = await _db.Articles.CountAsync();
         DotNetCount = await _db.Articles.CountAsync(a => a.Category == ".NET");
         GitHubCount = await _db.Articles.CountAsync(a => a.Category == "GitHub");
@@ -81,20 +52,6 @@ public class ArticlesModel : PageModel
         };
 
         Articles = await query.ToListAsync();
-    }
-
-    public async Task<IActionResult> OnPostSendDigestAsync()
-    {
-        await _dailyDigestService.SendDailyDigestEmailAsync();
-
-        return RedirectToPage();
-    }
-
-    public async Task<IActionResult> OnPostRunAutomationAsync()
-    {
-        await _digestAutomationService.RunDailyDigestAsync();
-
-        return RedirectToPage();
     }
 
     [BindProperty(SupportsGet = true)]
