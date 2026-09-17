@@ -1,0 +1,21 @@
+name: Daily Developer Digest
+
+on:
+  schedule:
+    - cron: '0 13 * * *'
+
+  workflow_dispatch:
+
+jobs:
+  send-digest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger DevDigest
+        run: |
+          curl --fail-with-body \
+            --retry 3 \
+            --retry-delay 10 \
+            -X POST \
+            "${{ secrets.DEVDIGEST_URL }}/Automation" \
+            -H "X-DevDigest-Key: ${{ secrets.DEVDIGEST_TRIGGER_KEY }}"
