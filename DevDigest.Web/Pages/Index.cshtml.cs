@@ -5,8 +5,5 @@ namespace DevDigest.Web.Pages;
 
 public class IndexModel : PageModel
 {
-    public IActionResult OnGet()
-    {
-        return RedirectToPage("/Articles");
-    }
+    public IActionResult OnGet() => RedirectToPage("/Articles");
 }

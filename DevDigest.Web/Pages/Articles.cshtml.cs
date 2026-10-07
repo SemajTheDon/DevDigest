@@ -10,10 +10,7 @@ public class ArticlesModel : PageModel
 {
     private readonly AppDbContext _db;
 
-    public ArticlesModel(AppDbContext db)
-    {
-        _db = db;
-    }
+    public ArticlesModel(AppDbContext db) => _db = db;
 
     public List<Article> Articles { get; set; } = [];
 

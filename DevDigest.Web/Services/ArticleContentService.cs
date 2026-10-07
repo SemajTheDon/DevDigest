@@ -5,10 +5,7 @@ namespace DevDigest.Web.Services;
 public class ArticleContentService : IArticleContentService
 {
     private readonly HttpClient _httpClient;
-    public ArticleContentService(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-    }
+    public ArticleContentService(HttpClient httpClient) => _httpClient = httpClient;
 
     public async Task<string> GetArticleContentAsync(string url, CancellationToken cancellationToken = default)
     {
