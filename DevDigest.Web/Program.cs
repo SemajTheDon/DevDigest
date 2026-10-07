@@ -9,11 +9,16 @@ builder.Services.AddRazorPages();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddSingleton<IArticleProcessingQueue, ArticleProcessingQueue>();
+builder.Services.AddHostedService<ArticleProcessingWorker>();
 builder.Services.AddScoped<RssFeedService>();
 builder.Services.AddScoped<AiSummaryService>();
+builder.Services.AddScoped<IAiSummaryService>(services => services.GetRequiredService<AiSummaryService>());
+builder.Services.AddScoped<IArticleProcessingService, ArticleProcessingService>();
 builder.Services.AddScoped<DigestAutomationService>();
 
 builder.Services.AddHttpClient<ArticleContentService>();
+builder.Services.AddScoped<IArticleContentService>(services => services.GetRequiredService<ArticleContentService>());
 builder.Services.AddHttpClient<DailyDigestService>();
 
 var app = builder.Build();

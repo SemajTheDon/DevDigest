@@ -2,7 +2,7 @@ using HtmlAgilityPack;
 
 namespace DevDigest.Web.Services;
 
-public class ArticleContentService
+public class ArticleContentService : IArticleContentService
 {
     private readonly HttpClient _httpClient;
     public ArticleContentService(HttpClient httpClient)
@@ -10,11 +10,11 @@ public class ArticleContentService
         _httpClient = httpClient;
     }
 
-    public async Task<string> GetArticleContentAsync(string url)
+    public async Task<string> GetArticleContentAsync(string url, CancellationToken cancellationToken = default)
     {
         try
         {
-            var html = await _httpClient.GetStringAsync(url);
+            var html = await _httpClient.GetStringAsync(url, cancellationToken);
 
             var document = new HtmlDocument();
             document.LoadHtml(html);
@@ -40,6 +40,10 @@ public class ArticleContentService
                 text = text[..maxLength];
             }
             return text;
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception ex)
         {

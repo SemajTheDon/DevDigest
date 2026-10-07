@@ -5,7 +5,7 @@ using OpenAI.Responses;
 
 namespace DevDigest.Web.Services;
 
-public class AiSummaryService
+public class AiSummaryService : IAiSummaryService
 {
     private readonly ResponsesClient _client;
     private readonly string _model;
@@ -26,7 +26,7 @@ public class AiSummaryService
         _client = new ResponsesClient(apiKey);
     }
 
-    public async Task ProcessArticleAsync(Article article, string? articleContent = null)
+    public async Task ProcessArticleAsync(Article article, string? articleContent = null, CancellationToken cancellationToken = default)
     {
         var contentToAnalyze =
         !string.IsNullOrWhiteSpace(articleContent)
@@ -92,7 +92,7 @@ public class AiSummaryService
             );
 
             var response =
-                await _client.CreateResponseAsync(options);
+                await _client.CreateResponseAsync(options, cancellationToken);
 
             string outputText =
                 response.Value.GetOutputText();
@@ -142,6 +142,10 @@ public class AiSummaryService
 
                 article.IsAiProcessed = false;
             }
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception ex)
         {

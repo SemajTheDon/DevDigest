@@ -8,14 +8,12 @@ namespace DevDigest.Web.Services;
 public class RssFeedService
 {
     private readonly AppDbContext _db;
-    private readonly AiSummaryService _aiSummaryService;
-    private readonly ArticleContentService _articleContentService;
+    private readonly IArticleProcessingQueue _articleProcessingQueue;
 
-    public RssFeedService(AppDbContext db, AiSummaryService aiSummaryService, ArticleContentService articleContentService)
+    public RssFeedService(AppDbContext db, IArticleProcessingQueue articleProcessingQueue)
     {
         _db = db;
-        _aiSummaryService = aiSummaryService;
-        _articleContentService = articleContentService;
+        _articleProcessingQueue = articleProcessingQueue;
     }
 
     public async Task ImportFeedsAsync()
@@ -48,16 +46,20 @@ public class RssFeedService
                     PublishedAt = item.PublishingDate ?? DateTime.UtcNow
                 };
 
-
-
                 _db.Articles.Add(article);
 
-                var fullContent = await _articleContentService.GetArticleContentAsync(article.Url);
+                // Persist article before external processing
+                await _db.SaveChangesAsync();
 
-                await _aiSummaryService.ProcessArticleAsync(article, fullContent);
+                try
+                {
+                    await _articleProcessingQueue.QueueArticleAsync(article.Id);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error queuing article {article.Id}: {ex.Message}");
+                }
             }
         }
-
-        await _db.SaveChangesAsync();
     }
 }
