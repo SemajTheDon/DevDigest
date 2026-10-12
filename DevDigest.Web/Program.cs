@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
+builder.Services.AddControllers();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -12,6 +13,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddSingleton<IArticleProcessingQueue, ArticleProcessingQueue>();
 builder.Services.AddHostedService<ArticleProcessingWorker>();
 builder.Services.AddScoped<RssFeedService>();
+builder.Services.AddScoped<IArticleService, ArticleService>();
 builder.Services.AddScoped<AiSummaryService>();
 builder.Services.AddScoped<IAiSummaryService>(services => services.GetRequiredService<AiSummaryService>());
 builder.Services.AddScoped<IArticleProcessingService, ArticleProcessingService>();
@@ -27,6 +29,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.MapRazorPages();
+app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
 {
@@ -38,3 +41,5 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+public partial class Program { }
